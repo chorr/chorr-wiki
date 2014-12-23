@@ -6,7 +6,7 @@
 
 DOM을 순차적으로 처리하는데는 일반적인 과정의 JavaScript 코드가 필요하다. 주로 새로운 노드를 계속해서 document에 추가, 복제, 제거하는데 도움이 되는 코드들이 있겠다.
 
-# 12.1 Injecting HTML
+## 12.1 Injecting HTML
 
 우선 효과적인 방법으로 HTML 문자열을 document 임의의 위치에 넣는걸 보자.
 
@@ -23,7 +23,7 @@ Internet Explorer에 있는 API ([W3C HTML 5 스펙에 포함](http://www.w3.org
 - 문자열의 inline script를 실행한다.
 
 
-## 12.1.1 Converting HTML to DOM
+### 12.1.1 Converting HTML to DOM
 
 딱히 마법과 같은게 아니라 우리가 익히 알고 있는 정밀한 도구: innerHTML 를 사용한다.
 * HTML 문자열이 확실하게 HTML/XHTML에 대해 유효한지 확인한다. (최대한 valid 하도록 조작)
@@ -34,7 +34,7 @@ Internet Explorer에 있는 API ([W3C HTML 5 스펙에 포함](http://www.w3.org
 "어때요? 참~ 쉽죠?"
 종종 gotchas가 있을 수 있는데, 부드럽게 극복할 수 있다.
 
-#### Pre-Process XML/HTML
+##### Pre-Process XML/HTML
 
 문맥에 따라 달라지는 경우.
 jQuery는 \<table/> 같은 XML 스타일 엘리먼트를 지원한다.
@@ -58,7 +58,7 @@ assert( convert("<hr/>") === "<hr/>", "Check hr conversion." );
 
 :::text
 
-#### HTML Wrapping
+##### HTML Wrapping
 
 대다수의 HTML 엘리먼트는 꼭 컨테이너 엘리먼트가 있어야한다. (예를 들어 option 태그)
 두 가지 해결책을 보자.
@@ -81,7 +81,7 @@ assert( convert("<hr/>") === "<hr/>", "Check hr conversion." );
 * col 태그를 위해 추가적인 tbody가 없으면 생성되지 않을 수 있다.
 * link, script 경우 IE에서 앞뒤에 노드없이 innerHTML 사용하면 엘리먼트를 생성해내지 못한다.
 
-#### Generating the DOM
+##### Generating the DOM
 
 [Listing 12.2](http://jsbin.com/ohevux)
 
@@ -118,7 +118,7 @@ IE에서는 아래의 버그가 있다.
 
 지금까지 과정을 거침으로써 이제 document에 추가할 준비가 되었다.
 
-## 12.1.2 Inserting into the Document
+### 12.1.2 Inserting into the Document
 
 * DOM Fragments
     * W3C DOM 스펙이며 모든 브라우저에서 지원
@@ -179,7 +179,7 @@ function root( elem, cur ) {
 }
 :::text
 
-## 12.1.3 Script Execution
+### 12.1.3 Script Execution
 
 인라인 스크립트 엘리먼트가 document에 추가되면 실행이 되어야 할 것이다.
 가장 좋은 방법은 document에 추가되기 전에 script 들을 분리시켜 놓는 방법이다.
@@ -204,7 +204,7 @@ for ( var i = 0; ret[i]; i++ ) {
 ret (생성 될 DOM 노드), scripts (스크립트들을 fragment로 모음)의 2가지 배열로 분리.
 이제 교묘한 방법으로 스크립트들을 실행해보자.
 
-#### Global Code Evaluation
+##### Global Code Evaluation
 
 사용자가 정의한 인라인 스크립트들은 global context로 실행 된다.
 Andrea Giammarchi 가 착안한 스크립트 실행법을 이용한다. - document에 script 엘리먼트를 붙였다 때어내는 방식
@@ -254,7 +254,7 @@ Note : 실행이 완료 된 스크립트는 DOM에서 제거 합니다. (나중�
 
 
 
-# 12.2 Cloning Elements
+## 12.2 Cloning Elements
 
 엘리먼트 복제(DOM cloneNode 메소드 사용)는 모든 브라우저에서 직접 사용 된다. 단, IE는 제외하고.
 IE는 3가지 절망적인 단계를 거쳐야한다.
@@ -307,7 +307,7 @@ function clone() {
 :::text
 
 
-# 12.3 Removing Elements
+## 12.3 Removing Elements
 
 DOM에서 엘리먼트 제거하기는 간단하다. (removeChild 바로 사용)
 제거하는 과정엔 주로 2단계가 필요하다.
@@ -395,7 +395,7 @@ Note : textContent/innerText 속성 사용 시 내부의 본래 엘리먼트 구
 - 엘리먼트가 사라지는 경우 앞서 언급했던 메모리릭이 발생
 - whitespace 크로스브라우징 처리 경우 최악
 
-#### Setting Text
+##### Setting Text
 
 - 내부의 엘리먼트가 비워지고, 새로운 텍스트가 입력된다.
 - 내부의 컨텐츠가 비워진다. - Listing 12.10
@@ -427,7 +427,7 @@ window.onload = function(){
 :::text
 
 
-#### Getting Text
+##### Getting Text
 
 * endline 관련 문제들 때문에 textContent/innerText 사용은 하지 않는다. (해당 문제를 딱히 신경 쓸 필요 없다면 그냥 사용하는게 간단)
 * 대신 텍스트 노드의 값들을 직접 읽어오는 것이 정확한 값을 가져오겠다.
@@ -468,7 +468,7 @@ window.onload = function(){
 :::text
 
 
-# 12.5 Summary
+## 12.5 Summary
 
 * DOM 조작에 있어 어려운점과 이를 해결하는 방법을 포괄적으로 살펴 보았다.
 * 크로스브라우징 이슈를 설명하고 실제로 구현하는게 훨씬 힘들다.
