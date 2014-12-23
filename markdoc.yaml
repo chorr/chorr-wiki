@@ -1,6 +1,7 @@
 wiki-name: "Chorr Wiki"
 markdown:
-  extensions: [codehilite]
+  extensions:
+    - codehilite
   extension-configs:
     codehilite:
       force_linenos: true

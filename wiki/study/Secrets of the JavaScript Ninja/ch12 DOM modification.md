@@ -43,20 +43,19 @@ pre-parse 통해 예방할 수 있겠다.
 
 [Listing 12.1](http://jsbin.com/izisar)
 
-:::javascript
-// Listing 12.1 : http://jsbin.com/izisar
-var tags = /^(abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i;
-function convert(html){
-  return html.replace(/(<(\w+)[^>]*?)\/>/g, function(all, front, tag){
-    return tags.test(tag) ?
-      all :
-      front + "></" + tag + ">";
-  });
-}
-assert( convert("<a/>") === "<a></a>", "Check anchor conversion." );
-assert( convert("<hr/>") === "<hr/>", "Check hr conversion." );
+    :::javascript
+    // Listing 12.1 : http://jsbin.com/izisar
+    var tags = /^(abbr|br|col|img|input|link|meta|param|hr|area|embed)$/i;
+    function convert(html){
+      return html.replace(/(<(\w+)[^>]*?)\/>/g, function(all, front, tag){
+        return tags.test(tag) ?
+          all :
+          front + "></" + tag + ">";
+      });
+    }
+    assert( convert("<a/>") === "<a></a>", "Check anchor conversion." );
+    assert( convert("<hr/>") === "<hr/>", "Check hr conversion." );
 
-:::text
 
 ##### HTML Wrapping
 
@@ -85,32 +84,31 @@ assert( convert("<hr/>") === "<hr/>", "Check hr conversion." );
 
 [Listing 12.2](http://jsbin.com/ohevux)
 
-:::javascript
-// Listing 12.2 : http://jsbin.com/ohevux
-function getNodes(htmlString){
-  var map = {
-    "<td": [3, "<table><tbody><tr>", "</tr></tbody></table>"],
-    "<option": [1, "<select multiple='multiple'>", "</select>"]
-    // a full list of all element fixes
-  };
+    :::javascript
+    // Listing 12.2 : http://jsbin.com/ohevux
+    function getNodes(htmlString){
+      var map = {
+        "<td": [3, "<table><tbody><tr>", "</tr></tbody></table>"],
+        "<option": [1, "<select multiple='multiple'>", "</select>"]
+        // a full list of all element fixes
+      };
 
-  var name = htmlString.match(/<\w+/),
-    node = name ? map[ name[0] ] : [0, "", ""];
+      var name = htmlString.match(/<\w+/),
+        node = name ? map[ name[0] ] : [0, "", ""];
 
-  var div = document.createElement("div");
-  div.innerHTML = node[1] + htmlString + node[2];
+      var div = document.createElement("div");
+      div.innerHTML = node[1] + htmlString + node[2];
 
-  while ( node[0]-- )
-    div = div.lastChild;
+      while ( node[0]-- )
+        div = div.lastChild;
 
-  return div.childNodes;
-}
+      return div.childNodes;
+    }
 
-assert( getNodes("<td>test</td><td>test2</td>").length === 2,
-  "Get two nodes back from the method." );
-assert( getNodes("<td>test</td>")[0].nodeName === "TD",
-  "Verify that we're getting the right node." );
-:::text
+    assert( getNodes("<td>test</td><td>test2</td>").length === 2,
+      "Get two nodes back from the method." );
+    assert( getNodes("<td>test</td>")[0].nodeName === "TD",
+      "Verify that we're getting the right node." );
 
 IE에서는 아래의 버그가 있다.
 - 빈 table에 tbody를 추가해버린다.
@@ -130,54 +128,53 @@ jQuery 코드를 참조해보면, fragment가 재생성 되어 함수에 전달�
 
 [Listing 12.3](http://jsbin.com/uyuwuz/2)
 
-:::javascript
-// Listing 12.3 : http://jsbin.com/uyuwuz/2
-// <div id="test"><b>Hello</b>, I'm a ninja!</div>
-// <div id="test2"></div>
+    :::javascript
+    // Listing 12.3 : http://jsbin.com/uyuwuz/2
+    // <div id="test"><b>Hello</b>, I'm a ninja!</div>
+    // <div id="test2"></div>
 
-window.onload = function(){
-  function insert(elems, args, callback){
-    if ( elems.length ) {
-      var doc = elems[0].ownerDocument || elems[0],
-        fragment = doc.createDocumentFragment(),
-        scripts = getNodes( args[0], doc, fragment ),
-        first = fragment.firstChild;
+    window.onload = function(){
+      function insert(elems, args, callback){
+        if ( elems.length ) {
+          var doc = elems[0].ownerDocument || elems[0],
+            fragment = doc.createDocumentFragment(),
+            scripts = getNodes( args[0], doc, fragment ),
+            first = fragment.firstChild;
 
-      if ( first ) {
-        for ( var i = 0; elems[i]; i++ ) {
-          callback.call( root(elems[i], first),
-            i > 0 ? fragment.cloneNode(true) : fragment );
+          if ( first ) {
+            for ( var i = 0; elems[i]; i++ ) {
+              callback.call( root(elems[i], first),
+                i > 0 ? fragment.cloneNode(true) : fragment );
+            }
+          }
         }
       }
-    }
-  }
 
-  var divs = document.getElementsByTagName("div");
+      var divs = document.getElementsByTagName("div");
 
-  insert(divs, ["<b>Name:</b>"], function(fragment){
-    this.appendChild( fragment );
-  });
+      insert(divs, ["<b>Name:</b>"], function(fragment){
+        this.appendChild( fragment );
+      });
 
-  insert(divs, ["<span>First</span> <span>Last</span>"],
-    function(fragment){
-      this.parentNode.insertBefore( fragment, this );
-    });
-};
-:::text
+      insert(divs, ["<span>First</span> <span>Last</span>"],
+        function(fragment){
+          this.parentNode.insertBefore( fragment, this );
+        });
+    };
 
 마지막으로 사용자가 직접 table 넣기를 시도할 경우 tbody를 매핑하는 식으로 관리해준다.
 
 [Listing 12.4](http://jsbin.com/uyuwuz/2)
-:::javascript
-// Listing 12.4 : http://jsbin.com/uyuwuz/2
-function root( elem, cur ) {
-  return elem.nodeName.toLowerCase() === "table" &&
-    cur.nodeName.toLowerCase() === "tr" ?
-    (elem.getElementsByTagName("tbody")[0] ||
-      elem.appendChild(elem.ownerDocument.createElement("tbody"))) :
-    elem;
-}
-:::text
+
+    :::javascript
+    // Listing 12.4 : http://jsbin.com/uyuwuz/2
+    function root( elem, cur ) {
+      return elem.nodeName.toLowerCase() === "table" &&
+        cur.nodeName.toLowerCase() === "tr" ?
+        (elem.getElementsByTagName("tbody")[0] ||
+          elem.appendChild(elem.ownerDocument.createElement("tbody"))) :
+        elem;
+    }
 
 ### 12.1.3 Script Execution
 
@@ -185,21 +182,21 @@ function root( elem, cur ) {
 가장 좋은 방법은 document에 추가되기 전에 script 들을 분리시켜 놓는 방법이다.
 
 [Listing 12.5](http://jsbin.com/atujam)
-:::javascript
-// Listing 12.5 : http://jsbin.com/atujam
-for ( var i = 0; ret[i]; i++ ) {
-  if ( jQuery.nodeName( ret[i], "script" ) &&
-      (!ret[i].type ||
-        ret[i].type.toLowerCase() === "text/javascript") ) {
-    scripts.push( ret[i].parentNode ?
-      ret[i].parentNode.removeChild( ret[i] ) :
-      ret[i] );
-  } else if ( ret[i].nodeType === 1 ) {
-    ret.splice.apply( ret, [i + 1, 0].concat(
-      jQuery.makeArray(ret[i].getElementsByTagName("script"))) );
-  }
-}
-:::text
+
+    :::javascript
+    // Listing 12.5 : http://jsbin.com/atujam
+    for ( var i = 0; ret[i]; i++ ) {
+      if ( jQuery.nodeName( ret[i], "script" ) &&
+          (!ret[i].type ||
+            ret[i].type.toLowerCase() === "text/javascript") ) {
+        scripts.push( ret[i].parentNode ?
+          ret[i].parentNode.removeChild( ret[i] ) :
+          ret[i] );
+      } else if ( ret[i].nodeType === 1 ) {
+        ret.splice.apply( ret, [i + 1, 0].concat(
+          jQuery.makeArray(ret[i].getElementsByTagName("script"))) );
+      }
+    }
 
 ret (생성 될 DOM 노드), scripts (스크립트들을 fragment로 모음)의 2가지 배열로 분리.
 이제 교묘한 방법으로 스크립트들을 실행해보자.
@@ -210,45 +207,45 @@ ret (생성 될 DOM 노드), scripts (스크립트들을 fragment로 모음)의 
 Andrea Giammarchi 가 착안한 스크립트 실행법을 이용한다. - document에 script 엘리먼트를 붙였다 때어내는 방식
 
 [Listing 12.6](http://jsbin.com/orevuz)
-:::javascript
-// Listing 12.6 : http://jsbin.com/orevuz
-function globalEval( data ) {
-  data = data.replace(/^\s+|\s+$/g, "");
 
-  if ( data ) {
-    var head = document.getElementsByTagName("head")[0] ||
-        document.documentElement,
-      script = document.createElement("script");
-
-      script.type = "text/javascript";
-      script.text = data;
-
-      head.insertBefore( script, head.firstChild );
-      head.removeChild( script );
-  }
-}
-:::text
+    :::javascript
+    // Listing 12.6 : http://jsbin.com/orevuz
+    function globalEval( data ) {
+      data = data.replace(/^\s+|\s+$/g, "");
+    
+      if ( data ) {
+        var head = document.getElementsByTagName("head")[0] ||
+            document.documentElement,
+          script = document.createElement("script");
+    
+          script.type = "text/javascript";
+          script.text = data;
+    
+          head.insertBefore( script, head.firstChild );
+          head.removeChild( script );
+      }
+    }
 
 "어때요? 참~ 쉽죠?"
 이제 이를 활용하여 동적 로딩까지 되는 코드를 만들 수 있습니다.
 
 [Listing 12.7](http://jsbin.com/uvinos)
-:::javascript
-// Listing 12.7 : http://jsbin.com/uvinos
-function evalScript( elem ) {
-  if ( elem.src )
-    jQuery.ajax({
-      url: elem.src,
-      async: false,
-      dataType: "script"
-    });
-  else
-    jQuery.globalEval( elem.text || "" );
 
-  if ( elem.parentNode )
-    elem.parentNode.removeChild( elem );
-}
-:::text
+    :::javascript
+    // Listing 12.7 : http://jsbin.com/uvinos
+    function evalScript( elem ) {
+      if ( elem.src )
+        jQuery.ajax({
+          url: elem.src,
+          async: false,
+          dataType: "script"
+        });
+      else
+        jQuery.globalEval( elem.text || "" );
+    
+      if ( elem.parentNode )
+        elem.parentNode.removeChild( elem );
+    }
 
 Note : 실행이 완료 된 스크립트는 DOM에서 제거 합니다. (나중에 의도치 않는 이중 실행을 방지)
 
@@ -263,20 +260,20 @@ IE는 3가지 절망적인 단계를 거쳐야한다.
 jQuery에 구현 된 간단한 테스트를 보자.
 
 [Listing 12.8](http://jsbin.com/atagec)
-:::javascript
-// Listing 12.8 : http://jsbin.com/atagec
-var div = document.createElement("div");
 
-if ( div.attachEvent && div.fireEvent ) {
-  div.attachEvent("onclick", function(){
-    // Cloning a node shouldn't copy over any
-    // bound event handlers (IE does this)
-    jQuery.support.noCloneEvent = false;
-    div.detachEvent("onclick", arguments.callee);
-  });
-  div.cloneNode(true).fireEvent("onclick");
-}
-:::text
+    :::javascript
+    // Listing 12.8 : http://jsbin.com/atagec
+    var div = document.createElement("div");
+    
+    if ( div.attachEvent && div.fireEvent ) {
+      div.attachEvent("onclick", function(){
+        // Cloning a node shouldn't copy over any
+        // bound event handlers (IE does this)
+        jQuery.support.noCloneEvent = false;
+        div.detachEvent("onclick", arguments.callee);
+      });
+      div.cloneNode(true).fireEvent("onclick");
+    }
 
 둘째, 복제 된 엘리먼트에서 이벤트 헨들러를 제거하면 본래 엘리먼트쪽이 제거된다. (custom expando 속성도 마찬가지)
 
@@ -284,27 +281,27 @@ if ( div.attachEvent && div.fireEvent ) {
 이 때 또다른 IE 버그 : innerHTML (또는 outerHTML) 읽어올 때 항상 정확한 엘리먼트 속성을 유지하지는 않는다. 때문에 XML DOM 확인 분기가 추가.
 
 [Listing 12.9](http://jsbin.com/etegeh)
-:::javascript
-// Listing 12.9 : http://jsbin.com/etegeh
-function clone() {
-  var ret = this.map(function(){
-    if ( !jQuery.support.noCloneEvent && !jQuery.isXMLDoc(this) ) {
-      var clone = this.cloneNode(true),
-        container = document.createElement("div");
-      container.appendChild(clone);
-      return jQuery.clean([container.innerHTML])[0];
-    } else
-      return this.cloneNode(true);
-  });
 
-  var clone = ret.find("*").andSelf().each(function(){
-    if ( this[ expando ] !== undefined )
-      this[ expando ] = null;
-  });
-
-  return ret;
-}
-:::text
+    :::javascript
+    // Listing 12.9 : http://jsbin.com/etegeh
+    function clone() {
+      var ret = this.map(function(){
+        if ( !jQuery.support.noCloneEvent && !jQuery.isXMLDoc(this) ) {
+          var clone = this.cloneNode(true),
+            container = document.createElement("div");
+          container.appendChild(clone);
+          return jQuery.clean([container.innerHTML])[0];
+        } else
+          return this.cloneNode(true);
+      });
+    
+      var clone = ret.find("*").andSelf().each(function(){
+        if ( this[ expando ] !== undefined )
+          this[ expando ] = null;
+      });
+    
+      return ret;
+    }
 
 
 ## 12.3 Removing Elements
@@ -320,37 +317,37 @@ DOM에서 엘리먼트 제거하기는 간단하다. (removeChild 바로 사용)
 위의 포인트들이 엘리먼트 - 자손도 포함한 제거 과정에서 진행되는 jQuery 코드를 보자.
 
 [Listing 12.10](http://jsbin.com/ivaguq)
-:::javascript
-// Listing 12.10 : http://jsbin.com/ivaguq
-function remove() {
-  // Go through all descendants and the element to be removed
-  jQuery( "*", this ).add([this]).each(function(){
-    // Remove all bound events
-    jQuery.event.remove(this);
 
-    // Remove attached data
-    jQuery.removeData(this);
-  });
-
-  // Remove the element (if it's in the DOM)
-  if ( this.parentNode )
-    this.parentNode.removeChild( this );
-}
-:::text
+    :::javascript
+    // Listing 12.10 : http://jsbin.com/ivaguq
+    function remove() {
+      // Go through all descendants and the element to be removed
+      jQuery( "*", this ).add([this]).each(function(){
+        // Remove all bound events
+        jQuery.event.remove(this);
+    
+        // Remove attached data
+        jQuery.removeData(this);
+      });
+    
+      // Remove the element (if it's in the DOM)
+      if ( this.parentNode )
+        this.parentNode.removeChild( this );
+    }
 
 또다른 고려사항은 정리 후에 실제로 DOM에서 엘리먼트가 없어졌는지 봐야한다. (역시 IE에서만 예외적)
 잘 동작하는 해결책으로는 IE에서 제공하는 outerHTML 을 활용하는 방법.
 
 [Listing 12.11](http://jsbin.com/uzuhuc)
-:::javascript
-// Listing 12.11 : http://jsbin.com/uzuhuc
-// Remove the element (if it's in the DOM)
-if ( this.parentNode )
-  this.parentNode.removeChild( this );
 
-if ( typeof this.outerHTML !== "undefined" )
-  this.outerHTML = "";
-:::text
+    :::javascript
+    // Listing 12.11 : http://jsbin.com/uzuhuc
+    // Remove the element (if it's in the DOM)
+    if ( this.parentNode )
+      this.parentNode.removeChild( this );
+    
+    if ( typeof this.outerHTML !== "undefined" )
+      this.outerHTML = "";
 
 '''기억하세요! 항상 DOM을 tidy하게 유지해야 나중에 메모리 이슈를 덜어줍니다.'''
 
@@ -361,33 +358,33 @@ if ( typeof this.outerHTML !== "undefined" )
 * IE에서는 innerText, textContent 속성 사용
 
 [Listing 12.12](http://jsbin.com/olanub/2)
-:::javascript
-// Listing 12.12 : http://jsbin.com/olanub/2
-// <div id="test"><b>Hello</b>, I'm a ninja!</div>
-// <div id="test2"></div>
 
-window.onload = function(){
-  var b = document.getElementById("test");
-  var text = b.textContent || b.innerText;
-
-  assert( text === "Hello, I'm a ninja!",
-    "Examine the text contents of an element." );
-  assert( b.childNodes.length === 2,
-    "An element and a text node exist." );
-
-  if ( typeof b.textContent !== "undefined" ) {
-    b.textContent = "Some new text";
-  } else {
-    b.innerText = "Some new text";
-  }
-
-  text = b.textContent || b.innerText;
-
-  assert( text === "Some new text", "Set a new text value." );
-  assert( b.childNodes.length === 1,
-    "Only one text nodes exists now." );
-};
-:::text
+    :::javascript
+    // Listing 12.12 : http://jsbin.com/olanub/2
+    // <div id="test"><b>Hello</b>, I'm a ninja!</div>
+    // <div id="test2"></div>
+    
+    window.onload = function(){
+      var b = document.getElementById("test");
+      var text = b.textContent || b.innerText;
+    
+      assert( text === "Hello, I'm a ninja!",
+        "Examine the text contents of an element." );
+      assert( b.childNodes.length === 2,
+        "An element and a text node exist." );
+    
+      if ( typeof b.textContent !== "undefined" ) {
+        b.textContent = "Some new text";
+      } else {
+        b.innerText = "Some new text";
+      }
+    
+      text = b.textContent || b.innerText;
+    
+      assert( text === "Some new text", "Set a new text value." );
+      assert( b.childNodes.length === 1,
+        "Only one text nodes exists now." );
+    };
 
 Note : textContent/innerText 속성 사용 시 내부의 본래 엘리먼트 구조는 사라진다.
 
@@ -403,28 +400,27 @@ Note : textContent/innerText 속성 사용 시 내부의 본래 엘리먼트 구
 HTML과 텍스트 입력의 차이점 : HTML 고유 문자가 escape 된다.
 때문에 createTextNode 메소드를 사용이 필요하다.
 
-:::javascript
-// Listing 12.13 : http://jsbin.com/otosuv/2
-// <div id="test"><b>Hello</b>, I'm a ninja!</div>
-// <div id="test2"></div>
-
-window.onload = function(){
-  var b = document.getElementById("test");
-
-  // Replace with your empty() method of choice
-  while ( b.firstChild )
-    b.removeChild( b.firstChild );
-
-  // Inject the escaped text node
-  b.appendChild( document.createTextNode( "Some new text" ) );
-
-  var text = b.textContent || b.innerText;
-
-  assert( text === "Some new text", "Set a new text value." );
-  assert( b.childNodes.length === 1,
-    "Only one text nodes exists now." );
-};
-:::text
+    :::javascript
+    // Listing 12.13 : http://jsbin.com/otosuv/2
+    // <div id="test"><b>Hello</b>, I'm a ninja!</div>
+    // <div id="test2"></div>
+    
+    window.onload = function(){
+      var b = document.getElementById("test");
+    
+      // Replace with your empty() method of choice
+      while ( b.firstChild )
+        b.removeChild( b.firstChild );
+    
+      // Inject the escaped text node
+      b.appendChild( document.createTextNode( "Some new text" ) );
+    
+      var text = b.textContent || b.innerText;
+    
+      assert( text === "Some new text", "Set a new text value." );
+      assert( b.childNodes.length === 1,
+        "Only one text nodes exists now." );
+    };
 
 
 ##### Getting Text
@@ -433,39 +429,39 @@ window.onload = function(){
 * 대신 텍스트 노드의 값들을 직접 읽어오는 것이 정확한 값을 가져오겠다.
 
 [Listing 12.14](http://jsbin.com/olanof/2)
-:::javascript
-// Listing 12.14 : http://jsbin.com/olanof/2
-// <div id="test"><b>Hello</b>, I'm a ninja!</div>
-// <div id="test2"></div>
 
-window.onload = function(){
-  function getText( elem ) {
-    var text = "";
+    :::javascript
+    // Listing 12.14 : http://jsbin.com/olanof/2
+    // <div id="test"><b>Hello</b>, I'm a ninja!</div>
+    // <div id="test2"></div>
 
-    for ( var i = 0, l = elem.childNodes.length; i < l; i++ ) {
-      var cur = elem.childNodes[i];
+    window.onload = function(){
+      function getText( elem ) {
+        var text = "";
 
-      // A text node has a nodeType === 3
-      if ( cur.nodeType === 3 )
-        text += cur.nodeValue;
+        for ( var i = 0, l = elem.childNodes.length; i < l; i++ ) {
+          var cur = elem.childNodes[i];
 
-      // If it's an element we need to recurse further
-      else if ( cur.nodeType === 1 )
-        text += getText( cur );
-    }
+          // A text node has a nodeType === 3
+          if ( cur.nodeType === 3 )
+            text += cur.nodeValue;
 
-    return text;
-  }
+          // If it's an element we need to recurse further
+          else if ( cur.nodeType === 1 )
+            text += getText( cur );
+        }
 
-  var b = document.getElementById("test");
-  var text = getText( b );
+        return text;
+      }
 
-  assert( text === "Hello, I'm a ninja!",
-    "Examine the text contents of an element." );
-  assert( b.childNodes.length === 2,
-    "An element and a text node exist." );
-};
-:::text
+      var b = document.getElementById("test");
+      var text = getText( b );
+
+      assert( text === "Hello, I'm a ninja!",
+        "Examine the text contents of an element." );
+      assert( b.childNodes.length === 2,
+        "An element and a text node exist." );
+    };
 
 
 ## 12.5 Summary
