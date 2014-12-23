@@ -1,3 +1,5 @@
+# Ch3. Functions are fundamental
+
 evernote에 막정리한 것 옮겨둠.
 
 함수는 기본이다.

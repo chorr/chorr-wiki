@@ -1,3 +1,5 @@
+# Ch12. DOM modification
+
 이 챕터에서 다루는 내용:
 - HTML 문자들을 페이지에 넣기
 - 엘리먼트 복제
@@ -37,7 +39,7 @@ Internet Explorer에 있는 API ([W3C HTML 5 스펙에 포함](http://www.w3.org
 ##### Pre-Process XML/HTML
 
 문맥에 따라 달라지는 경우.
-jQuery는 \<table/> 같은 XML 스타일 엘리먼트를 지원한다.
+jQuery는 &lt;table/&gt; 같은 XML 스타일 엘리먼트를 지원한다.
 브라우저에서는 (IE 같은) 일부분의 HTML 엘리먼트만 XML 스타일만 동작한다.
 pre-parse 통해 예방할 수 있겠다.
 
