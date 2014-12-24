@@ -1,1 +1,1 @@
-http://wiki.chorr.net
+http://w.chorr.net
