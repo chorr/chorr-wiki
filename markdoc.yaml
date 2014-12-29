@@ -1,4 +1,5 @@
 wiki-name: "Chorr Wiki"
+google-analytics: UA-2107779-4
 markdown:
   extensions:
     - codehilite
