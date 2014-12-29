@@ -1,7 +1,7 @@
 # LEXIP in DDC2011
 
 ## 개요 ##
-- GIT 저장소 : https://github.com/julyfool/lexip
+- GIT 저장소 : <https://github.com/chorr/lexip>
 - 다음 개발자 컨퍼런스 2011 전시 부문
 - Processing 1.5.1 에서 개발 진행
 

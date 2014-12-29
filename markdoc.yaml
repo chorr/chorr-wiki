@@ -1,8 +1,7 @@
 wiki-name: "Chorr Wiki"
 google-analytics: UA-2107779-4
 markdown:
-  extensions:
-    - codehilite
+  extensions: [codehilite]
   extension-configs:
     codehilite:
       force_linenos: true

@@ -46,8 +46,7 @@ Shift-Space, Ctrl-Space 입력이 각각 한영, 한자 키 입력으로 인식
     "OverrideKeyboardIdentifier"="PCAT_101AKEY"
 
 #### 참조 링크
-[http://bspfp.pe.kr/37](http://bspfp.pe.kr/37)
-
+<http://bspfp.pe.kr/37>
 
 ## 폰트별 기본 한글폰트 변경
 아래의 레지스트리 정보 수정
