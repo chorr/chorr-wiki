@@ -9,6 +9,7 @@
     df -h
     find . -name "*.xml" -exec grep -H "activity" {} \;
     find . -name "*.xml" | xargs grep "activity" --color=auto
+    ipconfig getifaddr en0
 
 ## 링크들
 
