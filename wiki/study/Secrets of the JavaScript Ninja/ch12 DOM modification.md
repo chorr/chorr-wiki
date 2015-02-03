@@ -1,4 +1,4 @@
-# Ch12. DOM modification
+# Chapter 12. DOM modification
 
 이 챕터에서 다루는 내용:
 - HTML 문자들을 페이지에 넣기

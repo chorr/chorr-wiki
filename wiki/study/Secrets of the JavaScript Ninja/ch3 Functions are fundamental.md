@@ -1,4 +1,4 @@
-# Ch3. Functions are fundamental
+# Chapter 3. Functions are fundamental
 
 evernote에 막정리한 것 옮겨둠.
 
