@@ -1,0 +1,8 @@
+{% extends 'markdoc-default/base.html' %}
+
+{% block css %}
+    {{ html.cssimport(make_relative("/media/css/reset.css")) }}
+    {{ html.cssimport(make_relative("/media/css/style.css")) }}
+    {{ html.cssimport(make_relative("/media/css/pygments.css")) }}
+    {{ html.cssimport(make_relative("/media/css/theme.css")) }}
+{% endblock %}
