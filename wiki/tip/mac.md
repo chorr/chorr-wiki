@@ -2,7 +2,8 @@
 
 ## 추천 어플리케이션
 - [Display Menu](https://itunes.apple.com/kr/app/display-menu/id549083868?mt=12) - 해상도 조절
-- [Mou](http://mouapp.com/) - 마크다운 에디터
+- [Mou](http://mouapp.com/) - 마크다운 에디터 (유료)
+- [MacDown](http://macdown.uranusjr.com/) - 마크다운 에디터 (무료)
 - [GPSPhotoLinker](http://www.earlyinnovations.com/gpsphotolinker/) - 사진에 위치정보 싱크
 - [svnX](http://code.google.com/p/svnx/) - SVN GUI tool
 - [iStat Menus](http://bjango.com/mac/istatmenus/)
