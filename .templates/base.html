@@ -83,6 +83,7 @@
 {% endblock body %}
 
 <hr class="clear" />
-{{ html.jsimport(make_relative("/media/js/jquery.min.js")) }}
+<script src="{{ make_relative("/media/js/es5-shim.min.js") }}"></script>
+<script data-main="{{ make_relative("/media/js/app/main") }}" src="{{ make_relative("/media/js/require.js") }}"></script>
 </body>
 </html>
