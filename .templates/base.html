@@ -1,8 +1,88 @@
-{% extends 'markdoc-default/base.html' %}
+<!DOCTYPE html>
+<html>
 
-{% block css %}
-    {{ html.cssimport(make_relative("/media/css/reset.css")) }}
-    {{ html.cssimport(make_relative("/media/css/style.css")) }}
-    {{ html.cssimport(make_relative("/media/css/pygments.css")) }}
-    {{ html.cssimport(make_relative("/media/css/theme.css")) }}
-{% endblock %}
+{% import "macros/html" as html -%}
+{% import "macros/crumbs" as breadcrumbs with context -%}
+
+<head>
+    {% block head %}
+
+    {% block meta %}
+    <meta charset="utf-8">
+    {% endblock %}
+
+    <title>
+        {% block title -%}
+        {{ title }}
+        {%- endblock %}
+        {% block title_prefix -%}
+        {% if 'wiki-name' in config %} » {{ config['wiki-name']|e }}{% endif %}
+        {%- endblock %}
+    </title>
+
+    {% block css %}
+        {{ html.cssimport(make_relative("/media/css/reset.css")) }}
+        {{ html.cssimport(make_relative("/media/css/style.css")) }}
+        {{ html.cssimport(make_relative("/media/css/pygments.css")) }}
+        {{ html.cssimport(make_relative("/media/css/theme.css")) }}
+    {% endblock %}
+
+    {% block js %}{% endblock %}
+
+    {% block analytics %}
+    {% if 'google-analytics' in config %}
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', '{{ config["google-analytics"] }}']);
+        _gaq.push(['_trackPageview']);
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
+        })();
+    </script>
+    {% endif %}
+    {% endblock analytics %}
+    {% endblock head %}
+</head>
+
+<body {% block body_attrs %}{% endblock %}>
+{% block body %}
+
+{% block body_header %}
+{% block crumbs %}
+{{ breadcrumbs.crumbs(crumbs) }}
+{% endblock crumbs %}
+{% endblock body_header %}
+
+<div id="content">
+    {% block content_header %}
+    {% endblock content_header %}
+
+    {% block content %}
+    {% endblock content %}
+
+    {% block content_footer %}
+    {% endblock content_footer %}
+
+    <hr class="clear" />
+</div> <!-- div#content -->
+
+{% block body_footer %}
+<div id="footer">
+    <p>
+        {% if 'wiki-name' in config %}
+        {{ config['wiki-name']|e }} —
+        {% endif %}
+        Powered by <a href="http://markdoc.org/">Markdoc</a>.
+    </p>
+</div>
+{% endblock body_footer %}
+
+{% endblock body %}
+
+<hr class="clear" />
+{{ html.jsimport(make_relative("/media/js/jquery.min.js")) }}
+</body>
+</html>
