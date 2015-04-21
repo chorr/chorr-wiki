@@ -12,6 +12,7 @@
 - [무비스트](http://cocoable.tistory.com) - 동영상 플레이어
 - [AppCleaner](http://www.freemacsoft.net/appcleaner/)
 - [HandBrake](https://handbrake.fr/) - 동영상 변환기
+- [Disk Inventory X](http://www.derlien.com/) - 디스크 용량 분석기
 
 ## 터미널 색상 적용
     export TERM="xterm-color"
